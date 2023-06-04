@@ -7,13 +7,13 @@ class Article {
         this.left = this.article.style.left;
     }
 
-    setPosition = (x, y) => {
+    setPosition(x, y) {
         this.article.style.position = 'absolute';
-        this.setX(x)
-        this.setY(y)
+        this.setX(x);
+        this.setY(y);
     };
 
-    setWidth = (width) => {
+    setWidth(width) {
         this.article.style.width = width + "px";
     }
 
@@ -35,7 +35,7 @@ class Article {
         return this.top;
     }
 
-    getWidth = () => {
+    getWidth() {
         return this.article.getBoundingClientRect().width;
     }
 
@@ -49,13 +49,13 @@ const getXPosition = (articleIndex, itemWidth, gap) => {
 }
 
 const getXPrevPosition = (prevRow, articleIndex) => {
-    const position = parseFloat(prevRow[articleIndex].getXPosition())
+    const position = parseFloat(prevRow[articleIndex].getXPosition());
 
     return position;
 }
 const getYPosition = (articleIndex, prevRow, gap) => {
-    const position = parseFloat(prevRow[articleIndex].getYPosition())
-    const height = prevRow[articleIndex].getHeight()
+    const position = parseFloat(prevRow[articleIndex].getYPosition());
+    const height = prevRow[articleIndex].getHeight();
 
     return position + height + gap;
 }
@@ -63,8 +63,8 @@ const getYPosition = (articleIndex, prevRow, gap) => {
 function renderWaterfall(rootNode, columnCount, elementGap) {
     rootNode.setAttribute('style', `display: flex flex-wrap: wrap`);
     const articles = Array.from(document.querySelector(".root").children);
-    const rootWidth = rootNode.getBoundingClientRect().width
-    const eachColumnWidth = (rootWidth / columnCount) - (elementGap * (columnCount - 1))
+    const rootWidth = rootNode.getBoundingClientRect().width;
+    const eachColumnWidth = (rootWidth / columnCount) - (elementGap * (columnCount - 1));
 
     const newArticles = articles.map((item) => {
         const article = new Article(item);
@@ -74,32 +74,31 @@ function renderWaterfall(rootNode, columnCount, elementGap) {
 
     let newArr = [];
 
-    for (let i = 0; i < columnCount - 1; i++) {
-        newArr = [...newArr, newArticles.splice(0, columnCount)]
+    for (let i = 0; i < columnCount; i++) {
+        newArr = [...newArr, newArticles.splice(0, columnCount)];
     }
 
     newArr.forEach((row, rowIndex) => {
-        console.log(row, rowIndex)
         row.forEach((article, articleIndex) => {
             if (rowIndex === 0) {
-                article.setPosition(getXPosition(articleIndex, article.getWidth(), elementGap), 0)
+                article.setPosition(getXPosition(articleIndex, article.getWidth(), elementGap), 0);
             } else {
                 const prevSortedRow = newArr[rowIndex - 1].slice().sort((a, b) => {
                     if (a.getHeight() > b.getHeight()) {
-                        return 1
+                        return 1;
                     } else {
-                        return -1
+                        return -1;
                     }
-                })
+                });
 
-                article.setPosition(getXPrevPosition(prevSortedRow, articleIndex), getYPosition(articleIndex, prevSortedRow, elementGap))
+                article.setPosition(getXPrevPosition(prevSortedRow, articleIndex), getYPosition(articleIndex, prevSortedRow, elementGap));
             }
-        })
-    })
+        });
+    });
 }
 
 const rootNode = document.querySelector('.root');
 const columnCount = 4;
 const elementGap = 20;
 
-renderWaterfall(rootNode, columnCount, elementGap)
+renderWaterfall(rootNode, columnCount, elementGap);
